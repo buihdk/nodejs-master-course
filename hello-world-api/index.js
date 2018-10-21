@@ -1,3 +1,5 @@
+'use strict';
+
 // Dependencies
 const http = require('http');
 const https = require('https');
@@ -6,7 +8,7 @@ const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const fs = require('fs');
 
-// Define unifiedServer function
+// Define func unifiedServer 
 const unifiedServer = (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const path = parsedUrl.pathname;
@@ -17,7 +19,7 @@ const unifiedServer = (req, res) => {
   const decoder = new StringDecoder('utf-8');
   let buffer = '';
 
-  req.on('data', data => buffer += decoder.write(data))
+  req.on('data', data => buffer += decoder.write(data));
   req.on('end', () => { 
     buffer += decoder.end();
     const chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
@@ -32,16 +34,17 @@ const unifiedServer = (req, res) => {
       res.writeHead(statusCode);
       res.end(payloadString);
 
-      console.log('Request received with these headers: ', headers);
-      console.log(`Request received on path: ${trimmedPath} with method: ${method} and with these query string parameters: ${JSON.stringify(queryStringObject)}`);
-      console.log('Request received with this payload: ', buffer);
+      console.log('-----------------------------------------------');
+      console.info('Request received with these headers: ', headers);
+      console.info(`Request received on path: ${trimmedPath} with method: ${method} and with these query string parameters: ${JSON.stringify(queryStringObject)}`);
+      console.info('Request received with this payload: ', buffer);
       console.info('Returning this response: ', statusCode, payloadString);
+      console.log('-----------------------------------------------');
     });
-  })
-
+  });
 }
 
-// Define getWelcomeMsg function
+// Define func getWelcomeMsg
 const arrWelcomeMsg = [
   'Hey! We are super excited to have you on board!',
   'May your stay here be safe and comfortable!',
@@ -57,11 +60,10 @@ const arrWelcomeMsg = [
   'Just so you know, everyday is hump day for our dog.',
   'Come back when you have tacos & booze!',
 ];
-const getWelcomeMsg = () => {
-  let randomIndex = Math.floor(Math.random()*arrWelcomeMsg.length);
-  let msgObj = { id: randomIndex, message: arrWelcomeMsg[randomIndex] };
-  return msgObj;
-}
+const getWelcomeMsg = () => ({ 
+  id: Math.floor(Math.random()*arrWelcomeMsg.length), 
+  message: arrWelcomeMsg[Math.floor(Math.random()*arrWelcomeMsg.length)] 
+});
 
 // Instantiate and start http server
 const httpServer = http.createServer((req, res) => unifiedServer(req, res));
@@ -73,11 +75,12 @@ const httpsServer = https.createServer(httpsServerOptions, (req, res) => unified
 httpsServer.listen(config.httpsPort, () => console.log(`The server is listening on port ${config.httpsPort}`));
 
 // Define handlers
-const handlers = {};
-handlers.ping = (data, callback) => callback(200);
-handlers.hello = (data, callback) => callback(200, getWelcomeMsg());
-handlers.sample = (data, callback) => callback(406, { message: 'This is a sample message.' });
-handlers.notFound = (data, callback) => callback(404, { message: 'Sorry, that page never returned home from a trip to the Bermuda Triangle.' });
+const handlers = {
+  ping: (data, callback) => callback(200),
+  hello: (data, callback) => callback(200, getWelcomeMsg()),
+  sample: (data, callback) => callback(406, { message: 'This is a sample message.' }),
+  notFound: (data, callback) => callback(404, { message: 'Sorry, that page never returned home from a trip to the Bermuda Triangle.' })
+};
 
 // Define a request router
 const router = {
