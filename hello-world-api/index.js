@@ -55,15 +55,15 @@ const arrWelcomeMsg = [
   'I was going to greet you but Facebook is not working!',
   'You have officially joined the cave! Welcome!',
   'Welcome! The neighbors have better stuff...',
-  'Doorbell broken. Yell "DING DONG!" really loud.',
+  'Doorbell broken. Yell DING DONG! really loud.',
   'Now entering drama free zone...',
   'Just so you know, everyday is hump day for our dog.',
   'Come back when you have tacos & booze!',
 ];
-const getWelcomeMsg = () => ({ 
-  id: Math.floor(Math.random()*arrWelcomeMsg.length), 
-  message: arrWelcomeMsg[Math.floor(Math.random()*arrWelcomeMsg.length)] 
-});
+const getWelcomeMsg = () => {
+  const randomIndex = Math.floor(Math.random()*arrWelcomeMsg.length);
+  return { id: randomIndex, message: arrWelcomeMsg[randomIndex] };
+};
 
 // Instantiate and start http server
 const httpServer = http.createServer((req, res) => unifiedServer(req, res));
