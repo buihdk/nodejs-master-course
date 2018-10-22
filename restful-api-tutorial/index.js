@@ -10,6 +10,25 @@ var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var config = require('./config');
 var fs = require('fs');
+var _data = require('./lib/data');
+
+// TESTING
+// TEST CREATE
+// _data.create('test', 'newFile2', {'foo': 'bar'}, function(err) {
+//   console.log('this was the error', err);
+// });
+// TEST READ
+// _data.read('test', 'newFile3', function(err, data) {
+//   console.log('this was the error', err, 'and this was the data', data);
+// });
+// TEST UPDATE
+// _data.update('test', 'newFile', {'fizz': 'buzz'}, function(err) {
+//   console.log('this was the error', err);
+// });
+// TEST DELETE
+// _data.delete('test', 'newFile2', function(err) {
+//   console.log('this was the error', err);
+// });
 
 // Instantiate the HTTP server
 var httpServer = http.createServer(function(req,res) { // req: request, res: response
